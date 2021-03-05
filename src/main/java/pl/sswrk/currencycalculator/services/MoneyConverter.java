@@ -1,14 +1,14 @@
 package pl.sswrk.currencycalculator.services;
 
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import pl.sswrk.currencycalculator.model.Money;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Currency;
 
-@Component
+@Service
 @AllArgsConstructor
 public class MoneyConverter{
 

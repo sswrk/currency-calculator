@@ -3,9 +3,8 @@ package pl.sswrk.currencycalculator.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
@@ -13,7 +12,7 @@ import java.math.RoundingMode;
 import java.text.MessageFormat;
 import java.util.Currency;
 
-@Component
+@Service
 @AllArgsConstructor
 public class NbpExchangeRateResource implements ExchangeRateResource{
 

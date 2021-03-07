@@ -18,18 +18,38 @@ import java.util.stream.Stream;
 @Route("exchange")
 public class CurrencyExchangeGui extends VerticalLayout {
 
+    private final MoneyConverter moneyConverter;
+
+    private HorizontalLayout moneyFrom;
+    private BigDecimalField moneyAmountFrom;
+    private ComboBox<String> currencyDropdownFrom;
+
+    private HorizontalLayout moneyTo;
+    private BigDecimalField moneyAmountTo;
+    private ComboBox<String> currencyDropdownTo;
 
     public CurrencyExchangeGui(@Autowired MoneyConverter moneyConverter){
 
-        HorizontalLayout moneyFrom;
-        BigDecimalField moneyAmountFrom;
-        ComboBox<String> currencyDropdownFrom;
+        this.moneyConverter = moneyConverter;
 
-        HorizontalLayout moneyTo;
-        BigDecimalField moneyAmountTo;
-        ComboBox<String> currencyDropdownTo;
+        initialize();
+    }
 
+    private void initialize() {
 
+        createMoneyFields();
+        setValueChangeListeners();
+
+    }
+
+    private void createMoneyFields() {
+        createMoneyFrom();
+        createMoneyTo();
+
+        add(moneyFrom, moneyTo);
+    }
+
+    private void createMoneyFrom() {
         moneyFrom = new HorizontalLayout();
 
         moneyAmountFrom = new BigDecimalField("You send");
@@ -39,9 +59,10 @@ public class CurrencyExchangeGui extends VerticalLayout {
         currencyDropdownFrom.setValue(AvailableCurrency.GBP.toString());
 
         moneyFrom.add(moneyAmountFrom, currencyDropdownFrom);
+    }
 
+    private void createMoneyTo() {
         moneyTo = new HorizontalLayout();
-
 
         moneyAmountTo = new BigDecimalField("They receive");
         currencyDropdownTo = new ComboBox<>("Select currency", Stream.of(AvailableCurrency.values())
@@ -50,30 +71,16 @@ public class CurrencyExchangeGui extends VerticalLayout {
         currencyDropdownTo.setValue(AvailableCurrency.PLN.toString());
 
         moneyTo.add(moneyAmountTo, currencyDropdownTo);
+    }
 
+    private void setValueChangeListeners(){
 
-        currencyDropdownFrom.addValueChangeListener(event -> {
-            Currency fromCurrency = Currency.getInstance(currencyDropdownFrom.getValue());
-            BigDecimal fromAmount = moneyAmountFrom.getValue();
+        setMoneyFromValueChangeListeners();
+        setMoneyToValueChangeListeners();
 
-            Currency toCurrency = Currency.getInstance(currencyDropdownTo.getValue());
+    }
 
-            moneyAmountTo.setValue(moneyConverter.convert(new Money(fromCurrency, fromAmount), toCurrency).getAmount());
-        });
-
-        moneyAmountFrom.setValueChangeMode(ValueChangeMode.LAZY);
-        moneyAmountFrom.addValueChangeListener(event -> {
-            if(event.isFromClient() && moneyAmountFrom.getValue()!=null) {
-                Currency fromCurrency = Currency.getInstance(currencyDropdownFrom.getValue());
-                BigDecimal fromAmount = moneyAmountFrom.getValue();
-
-                Currency toCurrency = Currency.getInstance(currencyDropdownTo.getValue());
-
-                moneyAmountTo.setValue(moneyConverter.convert(new Money(fromCurrency, fromAmount), toCurrency).getAmount());
-            }
-        });
-
-
+    private void setMoneyToValueChangeListeners() {
         currencyDropdownTo.addValueChangeListener(event -> {
             Currency fromCurrency = Currency.getInstance(currencyDropdownFrom.getValue());
 
@@ -94,7 +101,28 @@ public class CurrencyExchangeGui extends VerticalLayout {
                 moneyAmountFrom.setValue(moneyConverter.convert(new Money(toCurrency, toAmount), fromCurrency).getAmount());
             }
         });
+    }
 
-        add(moneyFrom, moneyTo);
+    private void setMoneyFromValueChangeListeners() {
+        currencyDropdownFrom.addValueChangeListener(event -> {
+            Currency fromCurrency = Currency.getInstance(currencyDropdownFrom.getValue());
+            BigDecimal fromAmount = moneyAmountFrom.getValue();
+
+            Currency toCurrency = Currency.getInstance(currencyDropdownTo.getValue());
+
+            moneyAmountTo.setValue(moneyConverter.convert(new Money(fromCurrency, fromAmount), toCurrency).getAmount());
+        });
+
+        moneyAmountFrom.setValueChangeMode(ValueChangeMode.LAZY);
+        moneyAmountFrom.addValueChangeListener(event -> {
+            if(event.isFromClient() && moneyAmountFrom.getValue()!=null) {
+                Currency fromCurrency = Currency.getInstance(currencyDropdownFrom.getValue());
+                BigDecimal fromAmount = moneyAmountFrom.getValue();
+
+                Currency toCurrency = Currency.getInstance(currencyDropdownTo.getValue());
+
+                moneyAmountTo.setValue(moneyConverter.convert(new Money(fromCurrency, fromAmount), toCurrency).getAmount());
+            }
+        });
     }
 }

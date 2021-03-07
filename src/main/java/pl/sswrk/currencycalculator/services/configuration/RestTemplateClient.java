@@ -1,4 +1,4 @@
-package pl.sswrk.currencycalculator.configuration;
+package pl.sswrk.currencycalculator.services.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;

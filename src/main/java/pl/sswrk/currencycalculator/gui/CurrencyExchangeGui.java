@@ -32,8 +32,8 @@ public class CurrencyExchangeGui extends VerticalLayout {
 
         moneyFrom = new HorizontalLayout();
 
-        moneyAmountFrom = new BigDecimalField("Select amount");
-        currencyDropdownFrom = new ComboBox<>("From currency", Stream.of(AvailableCurrency.values())
+        moneyAmountFrom = new BigDecimalField("You send");
+        currencyDropdownFrom = new ComboBox<>("Select currency", Stream.of(AvailableCurrency.values())
                 .map(AvailableCurrency::name)
                 .collect(Collectors.toList()));
         currencyDropdownFrom.setValue(AvailableCurrency.GBP.toString());
@@ -43,8 +43,8 @@ public class CurrencyExchangeGui extends VerticalLayout {
         moneyTo = new HorizontalLayout();
 
 
-        moneyAmountTo = new BigDecimalField("Calculated amount");
-        currencyDropdownTo = new ComboBox<>("To currency", Stream.of(AvailableCurrency.values())
+        moneyAmountTo = new BigDecimalField("They receive");
+        currencyDropdownTo = new ComboBox<>("Select currency", Stream.of(AvailableCurrency.values())
                 .map(AvailableCurrency::name)
                 .collect(Collectors.toList()));
         currencyDropdownTo.setValue(AvailableCurrency.PLN.toString());
@@ -63,7 +63,7 @@ public class CurrencyExchangeGui extends VerticalLayout {
 
         moneyAmountFrom.setValueChangeMode(ValueChangeMode.LAZY);
         moneyAmountFrom.addValueChangeListener(event -> {
-            if(event.isFromClient()) {
+            if(event.isFromClient() && moneyAmountFrom.getValue()!=null) {
                 Currency fromCurrency = Currency.getInstance(currencyDropdownFrom.getValue());
                 BigDecimal fromAmount = moneyAmountFrom.getValue();
 
@@ -85,7 +85,7 @@ public class CurrencyExchangeGui extends VerticalLayout {
 
         moneyAmountTo.setValueChangeMode(ValueChangeMode.LAZY);
         moneyAmountTo.addValueChangeListener(event -> {
-            if(event.isFromClient()) {
+            if(event.isFromClient() && moneyAmountTo.getValue()!=null) {
                 Currency fromCurrency = Currency.getInstance(currencyDropdownFrom.getValue());
 
                 Currency toCurrency = Currency.getInstance(currencyDropdownTo.getValue());
